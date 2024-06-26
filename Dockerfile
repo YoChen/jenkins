@@ -1,5 +1,6 @@
 # 使用官方Jenkins LTS作为基础镜像
 FROM jenkins/jenkins:2.452.2-lts-jdk21
+ENV REFRESHEDATE 2024-06-26
 
 USER root
 
