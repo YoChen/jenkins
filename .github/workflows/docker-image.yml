@@ -1,18 +1,21 @@
-name: Docker Image CI
+name: Docker Build and Push
+
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - main
+
 jobs:
-  build:
+  build-and-push:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Build the Docker image
+      - name: Checkout
+        uses: actions/checkout@v2
+      
+      - name: Login to Aliyun Container Registry
+        run: echo "${{ secrets.ALIYUN_REGISTRY_PASSWORD }}" | docker login --username "${{ secrets.ALIYUN_REGISTRY_USERNAME }}" --password-stdin registry.cn-hangzhou.aliyuncs.com
+
+      - name: Build and Push Docker Image
         run: |
-          docker version
-          ls
-          # 登录阿里云镜像仓库
-          docker login --username=${{ secrets.DOCKER_USERNAME }} --password=${{ secrets.DOCKER_PASSWORD }} registry.cn-hangzhou.aliyuncs.com
-          # 使用Dockerfile构建镜像
-          docker build . --file Dockerfile --tag registry.cn-hangzhou.aliyuncs.com/harvestiot/jenkins:latest
-          # 推送镜像到镜像仓库
+          docker build -t registry.cn-hangzhou.aliyuncs.com/harvestiot/jenkins:latest .
           docker push registry.cn-hangzhou.aliyuncs.com/harvestiot/jenkins:latest
