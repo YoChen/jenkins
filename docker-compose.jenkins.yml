@@ -1,0 +1,21 @@
+version: '3.8'
+services:
+  jenkins:
+    image: registry.cn-hangzhou.aliyuncs.com/harvestiot/jenkins
+    container_name: jenkins
+    user: root
+    ports:
+      - '10248:8080' # 映射 Jenkins UI 端口
+      - '50000:50000' # Jenkins 默认的Slave Agent 端口
+    volumes:
+      - jenkins-data:/var/jenkins_home # 持久化 Jenkins 数据
+      - ./jenkins-plugins:/var/jenkins_plugins # 可选：预先下载插件
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /usr/bin/docker:/usr/bin/docker
+    restart: unless-stopped
+
+volumes:
+  jenkins-data: # 数据卷声明
+
+### docker compose -f docker-compose.jenkins.yml up -d
+### docker compose -f docker-compose.jenkins.yml down
